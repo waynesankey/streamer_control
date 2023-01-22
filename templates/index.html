@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Streamer Control</title>
+        <title>{{ pageTitle }}</title>
         <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
     </head>
     <body>
@@ -11,8 +11,15 @@
         <h1>Music Streamer Controls</h1>
         <br>
         <p>Streamer DAC and I/V Power</p>
-        <form action="TURN ON" method="port">
-            <input type="submit" value="TURN ON" id="power1"> 
-        </form>
+        
+        <h3>
+            {% if powerState == 1 %}
+                <a href="/powerButton/off"class="button">TURN OFF</a> 
+			{% else %} 
+				<a href="/powerButton/on" class="button">TURN ON</a>  
+			{% endif %}
+        </h3>
+        <br>
+        <p>Time is: {{ time }}</p>
     </body>
 </html>

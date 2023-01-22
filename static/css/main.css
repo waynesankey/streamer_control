@@ -14,6 +14,20 @@ p{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.button {
+    font: bold 30px Arial;
+    text-decoration: none;
+    background-color: #EEEEEE;
+    color: #333333;
+    padding: 3px 9px 3px 9px;
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+  }
+
+
+/*
 #power1{
     background-color: rgb(201, 207, 210);
     font-size: 2em;
@@ -21,3 +35,4 @@ p{
     width: 250px;
     height: 75px;
 }
+*/
