@@ -10,16 +10,33 @@
         <br>
         <h1>Music Streamer Controls</h1>
         <br>
-        <p>Streamer DAC and I/V Power</p>
-        
+        {% if powerActual == 1 %}
+        <p>Streamer DAC and I/V Power is ON</p>
+        {% else %}
+        <p>Streamer DAC and I/V Power is OFF</p>
+        {% endif %}
+
+        <form action="/streamer" method="post">
+            {% if powerState == 1 %}
+            <p><input type="submit" value="TURN OFF"/></p>
+            {% else %}
+            <p><input type="submit" value="TURN ON"/></p>
+            {% endif %}
+        </form>
+
+<!--
         <h3>
             {% if powerState == 1 %}
-                <a href="/powerButton/off"class="button">TURN OFF</a> 
+                <a href="/streamer" class="button">TURN OFF</a> 
 			{% else %} 
-				<a href="/powerButton/on" class="button">TURN ON</a>  
+				<a href="/streamer" class="button">TURN ON</a>  
 			{% endif %}
         </h3>
+-->
         <br>
         <p>Time is: {{ time }}</p>
+
+        <a href="/streamer" class="button">REFRESH</a>
+
     </body>
 </html>

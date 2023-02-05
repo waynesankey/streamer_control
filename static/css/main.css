@@ -5,7 +5,7 @@ body {
 
 img {
     margin: 60px 0 30px 0;
-    width:  700px;
+    width:  500px;
 }
 
 p{
@@ -26,6 +26,21 @@ p{
     border-left: 1px solid #CCCCCC;
   }
 
+input[type = submit] {
+    font: bold 30px Arial;
+    text-decoration: none;
+    background-color: #EEEEEE;
+    text-decoration: none;
+    color: #333333;
+    padding: 3px 9px 3px 9px;
+    border-top: 1px solid #CCCCCC;
+    border-right: 1px solid #333333;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #CCCCCC;
+    margin: 20px 20px;
+    cursor: pointer;
+}
+ 
 
 /*
 #power1{

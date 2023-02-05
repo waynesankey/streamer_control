@@ -16,41 +16,75 @@ timeFormat = "%Y-%m-%d %H:%M:%S"
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 GPIO.setup(POWER_GPIO, GPIO.OUT)
-powerState = GPIO.input(POWER_GPIO)
-#powerState = 1
+powerActual = GPIO.input(POWER_GPIO)
+powerState = powerActual
 GPIO.output(POWER_GPIO, powerState)
+
+print(f"powerState is {powerState}.")
 
 app = Flask(__name__)
 
-@app.route("/streamer")
+@app.route("/streamer", methods = ["POST", "GET"])
 def index():
-    awareTime = datetime.datetime.now(pytz.timezone(timeZone))
-    timeString = awareTime.strftime(timeFormat)
-    templateData = {
-        'pageTitle' : pageTitleStr,
-        'time'      : timeString,
-        'powerState': powerState
-    }
-    return  render_template("index.html", **templateData)
+    global powerState
+    global powerActual
+
+    if request.method == "POST":
+        print("Starting the streamer route.")
+        powerActual = GPIO.input(POWER_GPIO)
+        print(f"Just sampled GPIO {POWER_GPIO}, the value is {powerActual}")
+
+        awareTime = datetime.datetime.now(pytz.timezone(timeZone))
+        timeString = awareTime.strftime(timeFormat)
+
+        print(f"at start of route, powerState is {powerState}")
+        if powerState >= 1:
+            powerState = 0
+        else:
+            powerState = 1
+        print(f"Now powerState is toggled and is: {powerState}")
+        print(f"Setting GPIO {POWER_GPIO} power to {powerState}")
+        GPIO.output(POWER_GPIO, powerState)
+        powerActual = GPIO.input(POWER_GPIO)
+        print(f"And one final sample of the GPIO {POWER_GPIO} to see what it's actually set to: {powerActual}")
+        
+        templateData = {
+            'pageTitle'    : pageTitleStr,
+            'time'         : timeString,
+            'powerState'   : powerState,
+            'powerActual'  : powerActual
+        }
+        return  render_template("index.html", **templateData)
+    else:
+        awareTime = datetime.datetime.now(pytz.timezone(timeZone))
+        timeString = awareTime.strftime(timeFormat)
+
+        templateData = {
+            'pageTitle'    : pageTitleStr,
+            'time'         : timeString,
+            'powerState'   : powerState,
+            'powerActual'  : powerActual
+        }
+        return  render_template("index.html", **templateData)
 
 
-@app.route("/<deviceName>/<action>")
-def action(deviceName, action):
-    if (deviceName == 'powerButton'):
-        if (action == 'on'):
-            powerState = POWER_ON
-            GPIO.output(POWER_GPIO, powerState)
-        elif (action == 'off'):
-            powerState = POWER_OFF
-            GPIO.output(POWER_GPIO, powerState)
-    awareTime = datetime.datetime.now(pytz.timezone(timeZone))
-    timeString = awareTime.strftime(timeFormat)
-    templateData = {
-	    'pageTitle' : pageTitleStr,
-        'time'      : timeString,
-        'powerState': powerState
-	}
-    return render_template('index.html', **templateData)
+# @app.route("/<deviceName>/<action>")
+# def action(deviceName, action):
+#     if (deviceName == 'powerButton'):
+#         if (action == 'on'):
+#             powerState = POWER_ON
+#             GPIO.output(POWER_GPIO, powerState)
+#         elif (action == 'off'):
+#             powerState = POWER_OFF
+#             GPIO.output(POWER_GPIO, powerState)
+#     awareTime = datetime.datetime.now(pytz.timezone(timeZone))
+#     timeString = awareTime.strftime(timeFormat)
+#     templateData = {
+# 	    'pageTitle' : pageTitleStr,
+#         'time'      : timeString,
+#         'powerState': powerState
+# 	}
+#     return render_template('index.html', **templateData)
 
 
 if __name__ == '__main__':
