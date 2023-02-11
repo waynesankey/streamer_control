@@ -6,21 +6,21 @@
         <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
     </head>
     <body>
-        <img src="https://raw.githubusercontent.com/waynesankey/streamer_control/main/streamer_parts1.png">
+        <img src="https://raw.githubusercontent.com/waynesankey/streamer_control/main/streamer_parts1.png" alt="streamer picture" width="500" height="100%" />
         <br>
         <h1>Music Streamer Controls</h1>
         <br>
         {% if powerActual == 1 %}
-        <p>Streamer DAC and I/V Power is ON</p>
+        <p>Streamer DAC and I/V Power  <img src="static/images/512px-Icon_green_lamp_on.svg.png" alt="green-circle" align="middle" width="60" height="60"/></p>
         {% else %}
-        <p>Streamer DAC and I/V Power is OFF</p>
+        <p>Streamer DAC and I/V Power  <img src="static/images/Icon_red_lamp_on.svg.png" alt="red-circle" align="middle" width="60" height="60"/></p>
         {% endif %}
 
         <form action="/streamer" method="post">
             {% if powerState == 1 %}
-            <p><input type="submit" value="TURN OFF"/></p>
+            <p><input type="submit" name="button_turn_off" value="TURN OFF"/></p>
             {% else %}
-            <p><input type="submit" value="TURN ON"/></p>
+            <p><input type="submit" name="button_turn_on" value="TURN ON"/></p>
             {% endif %}
         </form>
 
@@ -33,10 +33,24 @@
 			{% endif %}
         </h3>
 -->
+
+
         <br>
+        {% if powerState == 0 %}
+        <p>Time Streamer was ON: {{ deltaTime }} seconds</p>
+        {% else %}
+        <p>Time since Streamer was last used: {{ deltaTime }} seconds</p>
+        {% endif %}
         <p>Time is: {{ time }}</p>
 
+        <form action="/streamer" method="get">
+            <p><input type="submit" name="button_refresh" value="REFRESH"/></p>
+        </form>        
+
+<!--
         <a href="/streamer" class="button">REFRESH</a>
+-->
+        
 
     </body>
 </html>
