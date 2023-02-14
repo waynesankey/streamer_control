@@ -52,10 +52,12 @@ def index():
             powerState = 0
             tim.turn_off()
             delta_time = tim.time_turned_on()
+            total_time = tim.get_total_time()
         else:                # Power was OFF - turn it ON
             powerState = 1
             tim.turn_on()
             delta_time = tim.time_turned_off()
+            total_time = tim.get_total_time()
         print(f"Now powerState is toggled and is: {powerState}")
         print(f"Setting GPIO {POWER_GPIO} power to {powerState}")
         GPIO.output(POWER_GPIO, powerState)
@@ -65,7 +67,8 @@ def index():
         templateData = {
             'pageTitle'    : pageTitleStr,
             'time'         : tim.current_time(),
-            'deltaTime'    : int(delta_time),
+            'deltaTime'    : delta_time,
+            'totalTime'    : total_time,
             'powerState'   : powerState,
             'powerActual'  : powerActual
         }

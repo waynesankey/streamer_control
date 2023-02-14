@@ -37,11 +37,12 @@
 
         <br>
         {% if powerState == 0 %}
-        <p>Time Streamer was ON: {{ deltaTime }} seconds</p>
+        <p>Time Streamer was ON: {{ deltaTime }}</p>
         {% else %}
-        <p>Time since Streamer was last used: {{ deltaTime }} seconds</p>
+        <p>Time since Streamer was last used: {{ deltaTime }}</p>
         {% endif %}
-        <p>Time is: {{ time }}</p>
+        <p>Total Operating Time: {{ totalTime }}</p>
+        <p>{{ time }}</p>
 
         <form action="/streamer" method="get">
             <p><input type="submit" name="button_refresh" value="REFRESH"/></p>
