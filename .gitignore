@@ -2,4 +2,6 @@
 /venv/
 *.png
 *.jpg
+*.bak
+dynamicData.json
 

@@ -1,15 +1,29 @@
 from flask import Flask, render_template, request, flash
 import RPi.GPIO as GPIO
-from my_time import *
+import my_time
+import my_fileio
+import json
+
 
 # constants to set for project
 POWER_OFF = GPIO.LOW
 POWER_ON = GPIO.HIGH
 POWER_GPIO = 17
 
-pageTitleStr = "Wayne's High-end Streamer"
+userName = "Wayne"
+machineName = "Streamer"
 
-tim = Time()
+#instantiate the user defined classes
+
+tim = my_time.Time()
+fi = my_fileio.Files()
+
+
+machineName = fi.getMachineName()
+userName = fi.getUserName()
+pageTitleStr = userName + "\'s " + machineName
+heading1Str = fi.getHeading1()
+print(f"this {machineName} belongs to {userName}")
 
 # this sets up the output to work with Ian's ShieldPiPro, using the GPIO17 as the power control. (RPi J8 Header pin11)
 GPIO.setmode(GPIO.BCM)
@@ -20,6 +34,8 @@ powerState = powerActual
 GPIO.output(POWER_GPIO, powerState)
 
 print(f"powerState is {powerState}.")
+
+
 
 app = Flask(__name__)
 
@@ -43,21 +59,28 @@ def index():
         # name = output["name"]
         # print(f"button name is {name}")
 
-        
+        tim.setTimeZone(fi.getTimeZone())
+
         powerActual = GPIO.input(POWER_GPIO)
         print(f"Just sampled GPIO {POWER_GPIO}, the value is {powerActual}")
 
         print(f"at start of route, powerState is {powerState}")
         if powerState >= 1:  # Power was ON - turn it OFF
             powerState = 0
-            tim.turn_off()
-            delta_time = tim.time_turned_on()
-            total_time = tim.get_total_time()
+            tim.setTurnOffTime()
+            timeOn = tim.getTimeOn()
+            totalOnTime = fi.getTotalOnTime()
+            print(f"totalOnTIme from json file: {totalOnTime}")
+            totalOnTime =  totalOnTime + timeOn
+            tim.updateTotalOnTime(totalOnTime)
+            fi.putTotalOnTime(totalOnTime)
+            delta_time = tim.timeTurnedOn()
+            total_time = tim.getTotalOnTime()
         else:                # Power was OFF - turn it ON
             powerState = 1
-            tim.turn_on()
-            delta_time = tim.time_turned_off()
-            total_time = tim.get_total_time()
+            tim.setTurnOnTime()
+            delta_time = tim.timeTurnedOff()
+            total_time = tim.getTotalOnTime()
         print(f"Now powerState is toggled and is: {powerState}")
         print(f"Setting GPIO {POWER_GPIO} power to {powerState}")
         GPIO.output(POWER_GPIO, powerState)
@@ -66,7 +89,8 @@ def index():
         
         templateData = {
             'pageTitle'    : pageTitleStr,
-            'time'         : tim.current_time(),
+            'heading'      : heading1Str,
+            'time'         : tim.currentTime(),
             'deltaTime'    : delta_time,
             'totalTime'    : total_time,
             'powerState'   : powerState,
@@ -76,7 +100,8 @@ def index():
     else:
         templateData = {
             'pageTitle'    : pageTitleStr,
-            'time'         : tim.current_time(),
+            'heading'      : heading1Str,
+            'time'         : tim.currentTime(),
             'powerState'   : powerState,
             'powerActual'  : powerActual
         }

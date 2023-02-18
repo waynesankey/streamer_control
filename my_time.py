@@ -4,53 +4,70 @@ import time
 
 class Time:
 
+    #initalize variables and set the types by putting dummy variables on the RHS
     turnOnTime = dt.datetime.now()
     turnOffTime = dt.datetime.now()
     totalTurnOnTime = time.time()
-    totalTime = time.time()
+    totalOnTime = time.time()
     timeZone = ""
     timeFormat = ""
     deltaFormat = ""
 
     def __init__(self):
         print("in time module")
-        self.timeZone = "US/Central"
+        self.timeZone = "GMT"
+#        self.timeZone = fi.getTimeZone()
         self.timeFormat = "%b-%d-%Y %I:%M:%S %p"
         self.deltaFormat = "%H:%M:%S"
         self.turnOnTime = dt.datetime.now(pytz.timezone(self.timeZone))
         self.turnOffTime = dt.datetime.now(pytz.timezone(self.timeZone))
         self.totalTurnOnTime = time.time()
-        self.totalTime = 0
+        self.totalTurnOffTime = time.time()
+        self.totalOnTime = 0
         return
 
-    def turn_on(self):
+    def setTimeZone(self, tz):
+        print(f"Setting tz to {tz}")
+        self.timeZone = tz
+        return
+
+    def setTurnOnTime(self):
         self.turnOnTime = dt.datetime.now(pytz.timezone(self.timeZone))
         self.totalTurnOnTime = time.time()
         return
 
-    def turn_off(self):
+    def setTurnOffTime(self):
         self.turnOffTime = dt.datetime.now(pytz.timezone(self.timeZone))
-        self.totalTime = self.totalTime + (time.time() - self.totalTurnOnTime)
+        self.totalTurnOffTime = time.time()
         return
 
-    def current_time(self):
+    def getTimeOn(self):
+        timeOn = 0.0
+        timeOn = self.totalTurnOffTime - self.totalTurnOnTime
+        return int(timeOn)
+
+    def updateTotalOnTime(self, totalOnTime):
+        self.totalOnTime = totalOnTime
+        return self.totalOnTime
+
+    def currentTime(self):
         awareTime = dt.datetime.now(pytz.timezone(self.timeZone))
         timeString = awareTime.strftime(self.timeFormat)
         return timeString
 
-    def time_turned_on(self):
+    def timeTurnedOn(self):
         elapsed = self.turnOffTime - self.turnOnTime
         outputString = self.formatTimedeltaDHMS(elapsed)
         return outputString
 
-    def time_turned_off(self):
+    def timeTurnedOff(self):
         elapsed = self.turnOnTime - self.turnOffTime
         outputString = self.formatTimedeltaDHMS(elapsed)
         return outputString
 
-    def get_total_time(self):
+    def getTotalOnTime(self):
         outputString = ""
-        outputString = self.formatTimeHMS(self.totalTime)
+        outputString = self.formatTimeHMS(self.totalOnTime)
         return outputString
 
     def formatTimedeltaDHMS(self, timeDeltaIn):
